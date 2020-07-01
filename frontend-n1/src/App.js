@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from './services/api';
 
 import './App.css';
-import backgroundImage from '../src/assets/background.jpg';
 
 import Header from './components/Header';
+
 
 /**
   * Componente
@@ -12,24 +13,36 @@ import Header from './components/Header';
   */
 
 function App() {
-  const [projects, setProjects] = useState(['Desenvolvimento de app', 'Front-end web']);
+  const [projects, setProjects] = useState([]);
 
-  function handleAddProject() {
-    const project = `Novo projeto ${Date.now()}`;
+  async function handleAddProject() {
+    const response = await api.post('projects', {
+      title: `Novo projeto ${Date.now()}`,
+      owner: "Patrick"
+    });
 
-    setProjects([...projects, project]);
+    const projects = response.data;
+
+    setProjects(projects);
   }
+
+  useEffect(() => {
+    api.get('projects')
+      .then(response => {
+        setProjects(response.data);
+      });
+  }, []);
 
   return (
     <>
       <Header title="Projects" />
 
-      <img width={300} src={backgroundImage} alt="background" />
-
       <ul>
         {
           projects.map(project => (
-            <li key={project}>{project}</li>
+            <li key={project.id}>
+              {project.title}
+            </li>
           ))
         }
       </ul>
