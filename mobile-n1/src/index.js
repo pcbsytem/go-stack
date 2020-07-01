@@ -60,7 +60,7 @@ export default function App() {
 
         <FlatList
           data={projects}
-          keyExtractor={projects => projects.id}
+          keyExtractor={project => project.id}
           renderItem={({ item: project }) => (
             <Text style={styles.project}>
               {project.title}
